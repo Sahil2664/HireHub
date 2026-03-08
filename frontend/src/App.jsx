@@ -10,6 +10,7 @@ import JobDetail from './pages/JobDetail';
 import PostJob from './pages/PostJob';
 import Dashboard from './pages/Dashboard';
 import Applications from './pages/Applications';
+import Profile from './pages/Profile';
 
 function App() {
   return (
@@ -44,6 +45,13 @@ function App() {
           <Route path="/applications" element={
             <ProtectedRoute requiredRole="seeker">
               <Applications />
+            </ProtectedRoute>
+          } />
+
+          {/* Profile (Both) */}
+          <Route path="/profile" element={
+            <ProtectedRoute>
+              <Profile />
             </ProtectedRoute>
           } />
         </Routes>
