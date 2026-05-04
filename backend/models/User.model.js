@@ -25,7 +25,12 @@ const userSchema = new mongoose.Schema({
     skills: [String],
     resume: String,
     company: String,
-    phone: String
+    phone: String,
+    parsedResume: {  // NEW - Store parsed resume data
+      education: [String],
+      experience_years: Number,
+      raw_text: String
+    }
   }
 }, { timestamps: true });
 
