@@ -8,6 +8,7 @@ const JobDetail = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const [job, setJob] = useState(null);
+  const [matchScore, setMatchScore] = useState(null);
   const [coverLetter, setCoverLetter] = useState('');
   const [loading, setLoading] = useState(true);
   const [applying, setApplying] = useState(false);
@@ -15,7 +16,10 @@ const JobDetail = () => {
 
   useEffect(() => {
     fetchJob();
-  }, [id]);
+    if (user?.role === 'seeker') {
+      fetchMatchScore();
+    }
+  }, [id, user]);
 
   const fetchJob = async () => {
     try {
@@ -26,6 +30,27 @@ const JobDetail = () => {
       console.error('Error fetching job:', error);
       setLoading(false);
     }
+  };
+
+  const fetchMatchScore = async () => {
+    try {
+      const { data } = await API.get(`/ml/match-score/${id}`);
+      setMatchScore(data.match_score);
+    } catch (error) {
+      console.error('Error fetching match score:', error);
+    }
+  };
+
+  const getMatchColor = (score) => {
+    if (score >= 70) return 'bg-green-100 text-green-700';
+    if (score >= 50) return 'bg-yellow-100 text-yellow-700';
+    return 'bg-red-100 text-red-700';
+  };
+
+  const getMatchMessage = (score) => {
+    if (score >= 70) return "Great match! You're a strong candidate 🔥";
+    if (score >= 50) return "Good match! Worth applying 👍";
+    return "Consider building more relevant skills 🤔";
   };
 
   const handleApply = async (e) => {
@@ -67,6 +92,21 @@ const JobDetail = () => {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="bg-white rounded-xl shadow-sm p-8">
+          {/* Match Score for Job Seekers */}
+          {matchScore !== null && user?.role === 'seeker' && (
+            <div className={`mb-6 p-4 rounded-lg ${getMatchColor(matchScore)}`}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-2xl font-bold mb-1">{matchScore}% Match</div>
+                  <div className="text-sm">{getMatchMessage(matchScore)}</div>
+                </div>
+                <div className="text-4xl">
+                  {matchScore >= 70 ? '🔥' : matchScore >= 50 ? '👍' : '🤔'}
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="mb-6">
             <h1 className="text-4xl font-bold mb-2">{job.title}</h1>
             <p className="text-xl text-blue-600 font-medium">{job.company}</p>

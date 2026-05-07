@@ -29,7 +29,12 @@ const Navbar = () => {
                   <Link to="/dashboard" className="hover:text-blue-200">Dashboard</Link>
                 </>
               ) : (
-                <Link to="/applications" className="hover:text-blue-200">My Applications</Link>
+                <>
+                  <Link to="/recommended-jobs" className="hover:text-blue-200 flex items-center gap-1">
+                    AI Jobs 🤖
+                  </Link>
+                  <Link to="/applications" className="hover:text-blue-200">My Applications</Link>
+                </>
               )}
               
               <Link to="/profile" className="hover:text-blue-200">Profile</Link>
